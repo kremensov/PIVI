@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "651774732524",
+    "project_id": "pivi-37161",
+    "storage_bucket": "pivi-37161.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651774732524:android:66c5c0bb0c96f8f8489dc9",
+        "android_client_info": {
+          "package_name": "com.kremensov.pivi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651774732524-kirp46noi1a3mvh7kjkmse863oi993df.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn7xSXbgYl4AASjtMOHwIFzx6fp-3sltg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651774732524-kirp46noi1a3mvh7kjkmse863oi993df.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
