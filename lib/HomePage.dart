@@ -88,9 +88,12 @@ class _HomePageState extends State<HomePage> {
             SizedBox(width: 100.0),
 
 
+
+
+
             //Resultado do Container
             Container(
-              height: 380.0,
+              height: 330.0,
                 width: 320.0,
               margin: EdgeInsets.only(top: 70.0),
               padding: EdgeInsets.only(left: 28.0,bottom: 5.0, right: 18.0),
@@ -111,48 +114,98 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 20.0,right: 140.0),
-              child: Stack(
-                children: [
-                  Stack(
+
+
+
+            // Botão para falar
+
+
+
+
+
+
+            Row(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top:20, left: 40),
+                  height: 200,
+                  width: 150,
+                  child: Stack(
                     children: [
-                      Center(
-                        child: Image.asset('assets/images/pin2.png',
-                          height: 240.0,
-                          width: 200.0,
-                        ),
+                      Stack(
+                        children: [
+                          Align(
+                            child: Image.asset('assets/images/pin2.png',
+                              height: 200.0,
+                              width: 160.0,
+                            ),
+                          ),
+                        ],
                       ),
+                      Align(
+                        child: TextButton(
+                          onPressed: (){
+                            captureFromCamera();
+                          },
+                          onLongPress: (){
+                            captureFromGallery();
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 25.0, right: 5),
+                            child: image != null
+                                ? Image.file(image,
+                                width: 140.0,height: 162.0,fit: BoxFit.fill)
+                                : Container(
+                              width: 110.0,
+                              height: 200.0,
+                            child: Icon(
+                                Icons.camera_alt,
+                                size: 110.0,
+                                color: Colors.indigo.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                  Center(
-                    child: TextButton(
-                      onPressed: (){
-                        captureFromCamera();
-                      },
-                      onLongPress: (){
-                        captureFromGallery();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(top: 25.0),
-                        child: image != null
-                            ? Image.file(image,
-                            width: 140.0,height: 192.0,fit: BoxFit.fill)
-                            : Container(
-                          width: 240.0,
-                            height: 200.0,
-                            child: Icon(
-                              Icons.camera_alt,
-                              size: 100.0,
-                              color: Colors.indigo,
-                            ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                ),
+
+
+
+                Container(
+                  margin: EdgeInsets.only(left: 30),
+                  color: Colors.white.withOpacity(.2),
+
+                  height: 150,
+                  width: 110,
+
+                  child: IconButton(
+                    icon: new Icon(Icons.record_voice_over, size: 100, color: Colors.green,), onPressed: (){ captureFromCamera();},
+                    //size: 130,
+                    //  color: Colors.green,
+                  ),
+                ),
+
+
+
+              ],
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           ],
         ),
       ),
