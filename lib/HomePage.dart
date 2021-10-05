@@ -1,6 +1,8 @@
 import 'dart:io';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart'; // pacote para extrair texto de imagem
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_tts/flutter_tts_web.dart';
 import 'package:image_picker/image_picker.dart';
 
 
@@ -10,9 +12,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String result = "";
+  String result = "olá, agora posso falar. fico muito feliz em poder concluir o objetivo deste aplicativo que fotografa, lê e fala.";
   File image;
   ImagePicker imagePicker = ImagePicker();
+  FlutterTts flutterTts;
+  TtsState ttsState = TtsState.stopped;
+
+  //******************************************
+  //Método que recupera imagem de arquivo
+  //******************************************
 
   captureFromGallery() async{
     PickedFile pickedFile = await imagePicker.getImage(source: ImageSource.gallery,
@@ -20,18 +28,17 @@ class _HomePageState extends State<HomePage> {
     maxHeight: 1800);
     if (pickedFile != null) {
       image = File(pickedFile.path);
-
     }
-
-
     setState(() {
       image;
-
-      //Extraindo texto da imagem
-      textFromImage();
-    });
-
+      textFromImage();   //Extraindo texto da imagem
+    }
+    );
   }
+
+  //************************************************************
+  // Método que captur a imagem pela câmera do Smartphone
+  //************************************************************
 
   captureFromCamera() async{
     PickedFile pickedFile = await imagePicker.getImage(source: ImageSource.camera);
@@ -39,21 +46,19 @@ class _HomePageState extends State<HomePage> {
     result = "";
     setState(() {
       image;
-
-      //Extraindo texto da imagem
-      textFromImage();
-    });
-
+      textFromImage();    //Extraindo texto da imagem
+    }
+    );
   }
+
+
+  // Método que pega a imagem e captura a parte escrita
 
   textFromImage() async{
     final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromFile(image);
     final TextRecognizer recognizer = FirebaseVision.instance.textRecognizer();
-
     VisionText visionText = await recognizer.processImage(firebaseVisionImage);
-
     result = "";
-
     setState(() {
       for(TextBlock block in visionText.blocks){
         final String txt = block.text;
@@ -62,17 +67,57 @@ class _HomePageState extends State<HomePage> {
             result += element.text + " ";
           }
         }
-        result += "\n\n";
-
+        result += "\n\n";  // Inclui mudança de linha no texto
       }
-    });
+    }
+    );
   }
 
   @override
-  void initState(){
+  initState(){
     super.initState();
+    initTts();
     imagePicker = ImagePicker();
   }
+  //***************************
+  // Coeçando a falar
+  //***************************
+
+  initTts(){
+    flutterTts = FlutterTts();
+    flutterTts.setStartHandler(() {
+      setState(() {
+        ttsState = TtsState.playing;
+      });
+    });
+
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setErrorHandler((message) {
+      setState(() {
+        ttsState = TtsState.stopped;
+      });
+    });
+  }
+
+  Future fala() async {
+    await flutterTts.setVolume(0.5);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setPitch(1.0);
+    if (result != null){
+      if (result.isNotEmpty) {
+        var controle = await flutterTts.speak(result);
+        if (controle == 1) setState(() => ttsState = TtsState.playing);
+      }
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +128,15 @@ class _HomePageState extends State<HomePage> {
             image: AssetImage('assets/images/background.png'),
               fit: BoxFit.cover),
         ),
+
+        //***************************************************************
+        // Painel onde será escrito o que foi capturado pela câmera
+        //***************************************************************
+
         child: Column(
           children: [
             SizedBox(width: 100.0),
 
-
-
-
-
-            //Resultado do Container
             Container(
               height: 330.0,
                 width: 320.0,
@@ -115,14 +160,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-
-
-            // Botão para falar
-
-
-
-
-
+            //***************************************
+            // Botão para capturar a imgem
+            //***************************************
 
             Row(
               children: <Widget>[
@@ -171,7 +211,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
-
+                //***************************
+                // Botão para falar
+                //***************************
 
                 Container(
                   margin: EdgeInsets.only(left: 30),
@@ -181,31 +223,13 @@ class _HomePageState extends State<HomePage> {
                   width: 110,
 
                   child: IconButton(
-                    icon: new Icon(Icons.record_voice_over, size: 100, color: Colors.green,), onPressed: (){ captureFromCamera();},
+                    icon: new Icon(Icons.record_voice_over, size: 100, color: Colors.green,), onPressed: (){ fala();},
                     //size: 130,
                     //  color: Colors.green,
                   ),
                 ),
-
-
-
               ],
             )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           ],
         ),
       ),
